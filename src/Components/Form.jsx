@@ -1,22 +1,39 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFormState } from 'react-hook-form';
 import  { useState } from 'react';
 import '../Styles/Form.css';
 
 const Form = () => {
 
-    const { register, handleSubmit } = useForm();
-    const [formData,setFormData] = useState();
-    const [resetFormData,setResetFormData] = useState();
+    const initialFormValues = {
+        firstName: '',
+        lastName: '',
+        age: '',
+        employed: false,
+        favoriteColor: '',
+        sauces: [],
+        bestStooge: '',
+        notes: '',
+    }
+
+    const { register, handleSubmit, reset, formState: {isDirty, dirtyFields} } = useForm();
+    const [formData, setFormData] = useState(initialFormValues);
+    const [formSubmitted, setFormSubmitted] = useState(false);
+
+    const isFormModified = Object.keys(dirtyFields).some(
+        field => formData[field] !== initialFormValues[field]
+    );
 
     const onSubmit = (data) => {
     console.log(data);
     setFormData(data);
+    setFormSubmitted(true);
     }
     
-    const onReset = (formData) => {
-    setResetFormData(formData);
-
+    const handleReset = () => {
+        reset(initialFormValues);
+        setFormData(initialFormValues);
+        setFormSubmitted(true); // reset formSubmitted state to false
     }
 
     return (
@@ -34,7 +51,7 @@ const Form = () => {
                         </div>
                         <div>
                             <label htmlFor="">Age</label>
-                            <input type="text" placeholder='Age' {...register('Age')}/>
+                            <input type="text" placeholder='Age' {...register('age')}/>
                         </div>
                         <div>
                             <label htmlFor="">Employed</label>
@@ -43,30 +60,31 @@ const Form = () => {
                         <div>
                             <label htmlFor="">Favorite Color</label>
                             <select name="" id="">
-                                <option value="">Black</option>
-                                <option value="">Red</option>
-                                <option value="">White</option>
-                                <option value="">Green</option>
-                                <option value="">Gray</option>
+                                <option value="" {...register('favoriteColor')}></option>
+                                <option value="black" {...register('favoriteColor')}>Black</option>
+                                <option value="red" {...register('favoriteColor')}>Red</option>
+                                <option value="white" {...register('favoriteColor')}>White</option>
+                                <option value="green" {...register('favoriteColor')}>Green</option>
+                                <option value="gray" {...register('favoriteColor')}>Gray</option>
                             </select>
                         </div>
                         <div className='sauces-container'>
                             <label htmlFor="" className='sauces1'>Sauces</label>
                             <div className='sauces-sub-container'>
                                 <div className='sauces'>
-                                    <input type="checkbox" value='ketchup' {...register('sauce')}/>
+                                    <input type="checkbox" value='ketchup' {...register('sauces')}/>
                                     <label htmlFor="">Ketchup</label>
                                 </div>
                                 <div className='sauces'>
-                                    <input type="checkbox" value='mustard' {...register('sauce')}/>
+                                    <input type="checkbox" value='mustard' {...register('sauces')}/>
                                     <label htmlFor="">Mustard</label>
                                 </div>
                                 <div className='sauces'>
-                                    <input type="checkbox" value='mayonaisse' {...register('sauce')}/>
+                                    <input type="checkbox" value='mayonaisse' {...register('sauces')}/>
                                     <label htmlFor="">Mayonnaise</label>
                                 </div>
                                 <div className='sauces'>
-                                    <input type="checkbox" value='guacamole' {...register('sauce')}/>
+                                    <input type="checkbox" value='guacamole' {...register('sauces')}/>
                                     <label htmlFor="">Guacamole</label>
                                 </div>
                             </div>
@@ -75,15 +93,15 @@ const Form = () => {
                             <label htmlFor="">Best Stooge</label>
                             <div className='bestStooge-sub-container'>
                                 <div className='stooge'>
-                                    <input type="radio" {...register('bestStooge')} />
+                                    <input type="radio" value='larry' {...register('bestStooge')} />
                                     <label htmlFor="">Larry</label>
                                 </div>
                                 <div className='stooge'>
-                                    <input type="radio" {...register('bestStooge')} />
+                                    <input type="radio" value='moe' {...register('bestStooge')} />
                                     <label htmlFor="">Moe</label>
                                 </div>
                                 <div className='stooge'>
-                                    <input type="radio" {...register('bestStooge')} />
+                                    <input type="radio" value='curly'{...register('bestStooge')} />
                                     <label htmlFor="">Curly</label>
                                 </div>
                             </div>
@@ -93,14 +111,14 @@ const Form = () => {
                             <textarea name="" id="" cols="30" rows="10" placeholder='Notes' className='notes' {...register('textArea')}></textarea>
                         </div>
                         <div className='buttons-container'>
-                            <button type="submit" className='submit-button'>Submit</button>
-                            <button type='reset' className='reset-button'>Reset</button>
+                            <button type="submit" className='submit-button'  disabled={!isDirty}>Submit</button>
+                            <button type='reset' className='reset-button' onClick={handleReset}  disabled={!isDirty}>Reset</button>
                         </div>
                     </form>
                 </div>
                 <div className='object-container'>
                     <pre>
-                        {JSON.stringify(formData, null, 2)}
+                        {JSON.stringify(formData, null, 2) === JSON.stringify(initialFormValues, null, 2) ? '' : JSON.stringify(formData, null, 2)}
                     </pre>
                 </div>
             </div>

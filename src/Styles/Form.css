@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: center;
     width: 450px;
-    height: 550px;
+    height: auto;
     padding: 2em;
     border-radius: 8px;
     box-shadow: -webkit-box-shadow: 10px 10px 40px 0px rgba(0,0,0,0.48);
