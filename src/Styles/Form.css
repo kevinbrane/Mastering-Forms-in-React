@@ -1,0 +1,101 @@
+.form-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 380px;
+    height: 600px;
+    padding: 2em;
+    border-radius: 8px;
+    box-shadow: -webkit-box-shadow: 10px 10px 40px 0px rgba(0,0,0,0.48);
+    -moz-box-shadow: 10px 10px 40px 0px rgba(0,0,0,0.48);
+    box-shadow: 10px 10px 40px 0px rgba(0,0,0,0.48);
+}
+
+form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+form > div{
+    display: flex;
+    justify-content: space-between;
+}
+
+div > input {
+    width: 65%;
+}
+
+div > select {
+    width: 65%;
+    height: 2em;
+}
+
+.sauces-container{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.sauces{
+    display: flex;
+    flex-direction: column;
+}
+
+.sauces > input {
+    display: flex;
+    align-items: center;
+}
+
+.sauces > div{
+    display: flex;
+}
+
+.notes{
+    width: 70%;
+    height: 35px;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+}
+
+.submit-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 80px;
+    margin: 8px;
+    color: white;
+    background-color:#8ea8c5c5;
+    border: 1px solid;
+}
+
+.reset-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 80px;
+    margin: 8px;
+    color: #a6a6a6;
+    background-color: #f3f3f3;
+    border: 1px solid;
+}
+
+.object-container{
+    background-color: #e5e5e5;
+    border: 1px solid;
+    border-color: #d1d1d1;
+    height: 150px;
+}
+
+.object-container > pre {
+    margin-left: 8px;
+}
