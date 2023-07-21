@@ -19,21 +19,24 @@ const Form = () => {
     const { register, handleSubmit, reset, formState: {isDirty, dirtyFields} } = useForm();
     const [formData, setFormData] = useState(initialFormValues);
     const [formSubmitted, setFormSubmitted] = useState(false);
+    const [isReset, setIsReset] = useState(false);
 
     const isFormModified = Object.keys(dirtyFields).some(
         field => formData[field] !== initialFormValues[field]
     );
 
     const onSubmit = (data) => {
-    console.log(data);
-    setFormData(data);
-    setFormSubmitted(true);
+        console.log(data);
+        setFormData(data);
+        setIsReset(false); // Indica que no es un reinicio
+        setFormSubmitted(true);
     }
     
     const handleReset = () => {
         reset(initialFormValues);
         setFormData(initialFormValues);
-        setFormSubmitted(true);
+        setIsReset(true); // Indica que es un reinicio
+        setFormSubmitted(false); // Se vuelve a establecer formSubmitted a false
     }
 
     let formDataDisplay = Object.entries(formData)
@@ -44,11 +47,11 @@ const Form = () => {
     }, {});
 
     useEffect(() => {
-        if (formSubmitted) {
+        if (formSubmitted && !isReset) { // Muestra alerta solo en el envío, no en el reinicio
             alert(Object.keys(formDataDisplay).length === 0 ? '' : JSON.stringify(formDataDisplay, null, 2));
-            setFormSubmitted(true);
+            setFormSubmitted(false); // Se vuelve a establecer formSubmitted a false
         }
-    }, [formData, formSubmitted]);
+    }, [formData, formSubmitted, isReset]);
 
     return (
         <>
@@ -65,7 +68,7 @@ const Form = () => {
                         </div>
                         <div>
                             <label htmlFor="">Age</label>
-                            <input type="number" placeholder='Age' {...register('age')}/>
+                            <input type="number" placeholder='Age' min="0" {...register('age')}/>
                         </div>
                         <div>
                             <label htmlFor="">Employed</label>
@@ -132,7 +135,6 @@ const Form = () => {
                 </div>
                 <div className='object-container'>
                     <pre>
-                        {/* {JSON.stringify(formData, null, 2) === JSON.stringify(initialFormValues, null, 2) ? '' : JSON.stringify(formData, null, 2)} */}
                         {Object.keys(formDataDisplay).length === 0 ? '' : JSON.stringify(formDataDisplay, null, 2)}
                     </pre>
                 </div>
