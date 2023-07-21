@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm, useFormState } from 'react-hook-form';
-import  { useState } from 'react';
+import  { useState, useEffect } from 'react';
 import '../Styles/Form.css';
 
 const Form = () => {
@@ -11,7 +11,7 @@ const Form = () => {
         age: '',
         employed: false,
         favoriteColor: '',
-        sauces: [],
+        sauces: '',
         bestStooge: '',
         notes: '',
     }
@@ -33,8 +33,22 @@ const Form = () => {
     const handleReset = () => {
         reset(initialFormValues);
         setFormData(initialFormValues);
-        setFormSubmitted(true); // reset formSubmitted state to false
+        setFormSubmitted(true);
     }
+
+    let formDataDisplay = Object.entries(formData)
+    .filter(([key, value]) => value !== '' && value !== [] && value !== false && value !== null)
+    .reduce((newObj, [key, value]) => {
+        newObj[key] = value;
+        return newObj;
+    }, {});
+
+    useEffect(() => {
+        if (formSubmitted) {
+            alert(Object.keys(formDataDisplay).length === 0 ? '' : JSON.stringify(formDataDisplay, null, 2));
+            setFormSubmitted(true);
+        }
+    }, [formData, formSubmitted]);
 
     return (
         <>
@@ -43,15 +57,15 @@ const Form = () => {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div>
                             <label htmlFor="">First Name</label>
-                            <input type="text" placeholder='First Name' {...register('firstName')} />
+                            <input type="text" placeholder='First Name' pattern='[A-Za-z\s]*' {...register('firstName')} />
                         </div>
                         <div>
                             <label htmlFor="">Last Name</label>
-                            <input type="text" placeholder='Last Name' {...register('lastName')} />
+                            <input type="text" placeholder='Last Name' pattern='[A-Za-z\s]*' {...register('lastName')} />
                         </div>
                         <div>
                             <label htmlFor="">Age</label>
-                            <input type="text" placeholder='Age' {...register('age')}/>
+                            <input type="number" placeholder='Age' {...register('age')}/>
                         </div>
                         <div>
                             <label htmlFor="">Employed</label>
@@ -59,13 +73,13 @@ const Form = () => {
                         </div>
                         <div>
                             <label htmlFor="">Favorite Color</label>
-                            <select name="" id="">
-                                <option value="" {...register('favoriteColor')}></option>
-                                <option value="black" {...register('favoriteColor')}>Black</option>
-                                <option value="red" {...register('favoriteColor')}>Red</option>
-                                <option value="white" {...register('favoriteColor')}>White</option>
-                                <option value="green" {...register('favoriteColor')}>Green</option>
-                                <option value="gray" {...register('favoriteColor')}>Gray</option>
+                            <select name="" id="" {...register('favoriteColor')}>
+                                <option value=""></option>
+                                <option value="black" >Black</option>
+                                <option value="red" >Red</option>
+                                <option value="white" >White</option>
+                                <option value="green" >Green</option>
+                                <option value="gray" >Gray</option>
                             </select>
                         </div>
                         <div className='sauces-container'>
@@ -108,7 +122,7 @@ const Form = () => {
                         </div>
                         <div>
                             <label htmlFor="">Notes</label>
-                            <textarea name="" id="" cols="30" rows="10" placeholder='Notes' className='notes' {...register('textArea')}></textarea>
+                            <textarea name="" id="" cols="30" rows="10" placeholder='Notes' className='notes' maxLength="100" {...register('notes')}></textarea>
                         </div>
                         <div className='buttons-container'>
                             <button type="submit" className='submit-button'  disabled={!isDirty}>Submit</button>
@@ -118,7 +132,8 @@ const Form = () => {
                 </div>
                 <div className='object-container'>
                     <pre>
-                        {JSON.stringify(formData, null, 2) === JSON.stringify(initialFormValues, null, 2) ? '' : JSON.stringify(formData, null, 2)}
+                        {/* {JSON.stringify(formData, null, 2) === JSON.stringify(initialFormValues, null, 2) ? '' : JSON.stringify(formData, null, 2)} */}
+                        {Object.keys(formDataDisplay).length === 0 ? '' : JSON.stringify(formDataDisplay, null, 2)}
                     </pre>
                 </div>
             </div>
