@@ -31,17 +31,16 @@ const Form = () => {
     );
 
     const onSubmit = (data) => {
-        console.log(data);
         setFormData(data);
-        setIsReset(false); // Indica que no es un reinicio
+        setIsReset(false); 
         setFormSubmitted(true);
     }
     
     const handleReset = () => {
         reset(initialFormValues);
         setFormData(initialFormValues);
-        setIsReset(true); // Indica que es un reinicio
-        setFormSubmitted(false); // Se vuelve a establecer formSubmitted a false
+        setIsReset(true); // Indicates that it's a reset
+        setFormSubmitted(false); // Set formSubmitted back to false
     }
 
     let formDataDisplay = Object.entries(formData)
@@ -52,9 +51,9 @@ const Form = () => {
     }, {});
 
     useEffect(() => {
-        if (formSubmitted && !isReset) { // Muestra alerta solo en el envío, no en el reinicio
+        if (formSubmitted && !isReset) { 
             alert(Object.keys(formDataDisplay).length === 0 ? '' : JSON.stringify(formDataDisplay, null, 2));
-            setFormSubmitted(false); // Se vuelve a establecer formSubmitted a false
+            setFormSubmitted(false); // formSubmitted is set back to false
         }
     }, [formData, formSubmitted, isReset]);
 
