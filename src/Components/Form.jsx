@@ -5,6 +5,11 @@ import '../Styles/Form.css';
 
 const Form = () => {
 
+    const isInvalidCharacter = (value) => {
+        const regex = /[!@#$%^&*()_+={}|[\]\\:';"<>?,./~]/;
+        return regex.test(value);
+    };
+
     const initialFormValues = {
         firstName: '',
         lastName: '',
@@ -60,11 +65,11 @@ const Form = () => {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div>
                             <label htmlFor="">First Name</label>
-                            <input type="text" placeholder='First Name' pattern='[A-Za-z\s]*' {...register('firstName')} />
+                            <input type="text" placeholder='First Name' pattern='[A-Za-z\s]*' className={isInvalidCharacter(formData.firstName) ? "invalid-input" : ""} {...register('firstName')} />
                         </div>
                         <div>
                             <label htmlFor="">Last Name</label>
-                            <input type="text" placeholder='Last Name' pattern='[A-Za-z\s]*' {...register('lastName')} />
+                            <input type="text" placeholder='Last Name' pattern='[A-Za-z\s]*' className={isInvalidCharacter(formData.lastName) ? "invalid-input" : ""} {...register('lastName')} />
                         </div>
                         <div>
                             <label htmlFor="">Age</label>
