@@ -1,12 +1,12 @@
-import React from 'react';
-import { useForm, useFormState } from 'react-hook-form';
-import  { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import '../Styles/Form.css';
+import DataObject from './DataObject';
 
 const Form = () => {
-
     const isInvalidCharacter = (value) => {
-        const regex = /[!@#$%^&*()_+={}|[\]\\:';"<>?,./~]/;
+        const regex = /[!@#$%^&*()_+={}ç|[\]\\:';"<>?,./~]/;
         return regex.test(value);
     };
 
@@ -17,46 +17,45 @@ const Form = () => {
         employed: false,
         favoriteColor: '',
         sauces: '',
-        bestStooge: '',
+        bestStooge: 'Larry',
         notes: '',
     }
 
-    const { register, handleSubmit, reset, formState: {isDirty, dirtyFields} } = useForm();
-    const [formData, setFormData] = useState(initialFormValues);
+    const { register, handleSubmit, reset, formState: {isDirty}, watch } = useForm({
+        defaultValues: initialFormValues,
+    });
+
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [isReset, setIsReset] = useState(false);
 
-    const isFormModified = Object.keys(dirtyFields).some(
-        field => formData[field] !== initialFormValues[field]
-    );
+    const watchAllFields = watch();
 
     const onSubmit = (data) => {
-        setFormData(data);
-        setIsReset(false); 
         setFormSubmitted(true);
-    }
-    
-    const handleReset = () => {
-        reset(initialFormValues);
-        setFormData(initialFormValues);
-        setIsReset(true); // Indicates that it's a reset
-        setFormSubmitted(false); // Set formSubmitted back to false
+        setIsReset(false);
     }
 
-    let formDataDisplay = Object.entries(formData)
-    .filter(([key, value]) => value !== '' && value !== [] && value !== false && value !== null)
+    const handleReset = () => {
+        reset(initialFormValues);
+        setIsReset(true);
+        setFormSubmitted(false);
+    }
+
+    let formDataDisplay = Object.entries(watchAllFields)
+    .filter(([key, value]) => value !== '' && value !== [] && value !== null)
     .reduce((newObj, [key, value]) => {
         newObj[key] = value;
         return newObj;
     }, {});
 
     useEffect(() => {
-        if (formSubmitted && !isReset) { 
-            alert(Object.keys(formDataDisplay).length === 0 ? '' : JSON.stringify(formDataDisplay, null, 2));
-            setFormSubmitted(false); // formSubmitted is set back to false
+        if(formSubmitted && !isReset) {
+            alert(JSON.stringify(formDataDisplay, null, 2));
+            setFormSubmitted(false);
         }
-    }, [formData, formSubmitted, isReset]);
+    }, [formSubmitted, isReset, formDataDisplay]);
 
+    
     return (
         <>
             <div className='form-container'>
@@ -64,11 +63,11 @@ const Form = () => {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div>
                             <label htmlFor="">First Name</label>
-                            <input type="text" placeholder='First Name' pattern='[A-Za-z\s]*' className={isInvalidCharacter(formData.firstName) ? "invalid-input" : ""} {...register('firstName')} />
+                            <input type="text" placeholder='First Name' pattern='[A-Za-z\s]*' className={isInvalidCharacter(watchAllFields.firstName) ? "invalid-input" : ""} {...register('firstName')} />
                         </div>
                         <div>
                             <label htmlFor="">Last Name</label>
-                            <input type="text" placeholder='Last Name' pattern='[A-Za-z\s]*' className={isInvalidCharacter(formData.lastName) ? "invalid-input" : ""} {...register('lastName')} />
+                            <input type="text" placeholder='Last Name' pattern='[A-Za-z\s]*' className={isInvalidCharacter(watchAllFields.lastName) ? "invalid-input" : ""} {...register('lastName')} />
                         </div>
                         <div>
                             <label htmlFor="">Age</label>
@@ -82,11 +81,11 @@ const Form = () => {
                             <label htmlFor="">Favorite Color</label>
                             <select name="" id="" {...register('favoriteColor')}>
                                 <option value=""></option>
-                                <option value="black" >Black</option>
-                                <option value="red" >Red</option>
-                                <option value="white" >White</option>
-                                <option value="green" >Green</option>
-                                <option value="gray" >Gray</option>
+                                <option value="#000000" >Black</option>
+                                <option value="#FF2D00" >Red</option>
+                                <option value="#FFFFFF" >White</option>
+                                <option value="#00ff00" >Green</option>
+                                <option value="#959595" >Gray</option>
                             </select>
                         </div>
                         <div className='sauces-container'>
@@ -114,7 +113,7 @@ const Form = () => {
                             <label htmlFor="">Best Stooge</label>
                             <div className='bestStooge-sub-container'>
                                 <div className='stooge'>
-                                    <input type="radio" value='larry' {...register('bestStooge')} />
+                                    <input type="radio" value='larry' {...register('bestStooge')} defaultChecked />
                                     <label htmlFor="">Larry</label>
                                 </div>
                                 <div className='stooge'>
@@ -132,16 +131,12 @@ const Form = () => {
                             <textarea name="" id="" cols="30" rows="10" placeholder='Notes' className='notes' maxLength="100" {...register('notes')}></textarea>
                         </div>
                         <div className='buttons-container'>
-                            <button type="submit" className='submit-button'  disabled={!isDirty}>Submit</button>
-                            <button type='reset' className='reset-button' onClick={handleReset}  disabled={!isDirty}>Reset</button>
+                            <button type="submit" className='submit-button' disabled={!isDirty}>Submit</button>
+                            <button type='reset' className='reset-button' onClick={handleReset} disabled={!isDirty}>Reset</button>
                         </div>
                     </form>
                 </div>
-                <div className='object-container'>
-                    <pre>
-                        {Object.keys(formDataDisplay).length === 0 ? '' : JSON.stringify(formDataDisplay, null, 2)}
-                    </pre>
-                </div>
+                <DataObject formDataDisplay={{...initialFormValues, ...formDataDisplay}} />
             </div>
         </>
     );

@@ -115,21 +115,3 @@ div > select {
     background-color: #f3f3f3;
     border: 1px solid;
 }
-
-.object-container{
-    margin-top: 10px;
-    background-color: #e5e5e5;
-    border: 1px solid;
-    border-color: #d1d1d1;
-    min-height: 100px;
-    width: 100%;
-}
-
-.object-container > pre {
-    display: flex;
-    justify-content: flex-start;
-    text-align: left;
-    margin-left: 8px;
-    font-size: smaller;
-    font-weight: 600;
-}
